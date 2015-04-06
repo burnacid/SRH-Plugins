@@ -9,7 +9,7 @@ if (!defined("PLUGINLIBRARY")) {
 }
 
 //HOOKS
-$plugins->add_hook("global_intermediate","onlineplayers_global");
+$plugins->add_hook("global_intermediate", "onlineplayers_global");
 
 function onlineplayers_info()
 {
@@ -47,25 +47,34 @@ function onlineplayers_activate()
 
 
     $PL->settings("onlineplayers", // group name and settings prefix
-        "Online Players", "Setting group for the Online Players plugin.", array("errorlvl" =>
-            array(
+        "Online Players", "Setting group for the Online Players plugin.", array(
+        "errorlvl" => array(
             "title" => "Error level",
             "description" => "Number of admins online to display an error (lower or equal to)",
             "optionscode" => "text",
             "value" => 1,
-            ), "warninglvl" => array(
+            ),
+        "warninglvl" => array(
             "title" => "Warning level",
             "description" => "Number of admins online to display an warning (lower or equal to)",
             "optionscode" => "text",
             "value" => 3,
-            ), "server" => array(
+            ),
+        "server" => array(
             "title" => "Garrys Mod Server",
             "description" => "The IP:Port of the server for admins to quick connect",
             "optionscode" => "text",
             "value" => "69.162.71.162:27015",
+            ),
+        "groupids" => array(
+            "title" => "Visible to groups",
+            "description" => "Groep ID's to how the error is visible",
+            "optionscode" => "text",
+            "value" => "4",
             )));
 
-    $t_onlineplayers_adminmsg = '<div class="{$warnclass}"><a href="steam://connect/{$mybb->settings[\'onlineplayers_server\']}">There are currently {$adminsonline} admins online</a></div>';
+    $t_onlineplayers_adminmsg =
+        '<div class="{$warnclass}"><a href="steam://connect/{$mybb->settings[\'onlineplayers_server\']}">There are currently {$adminsonline} admins online</a></div>';
 
     $PL->templates("onlineplayers", // template prefix, must not contain _
         "Online Players", // you can also use "<lang:your_language_variable>" here
@@ -113,27 +122,31 @@ function onlineplayers_deactivate()
     $PL->templates_delete("onlineplayers", true);
     $PL->stylesheet_delete('onlineplayers', true);
 
-    find_replace_templatesets('header', '#' . preg_quote('{$onlineadmins}') .
-        '#', "");
+    find_replace_templatesets('header', '#' . preg_quote('{$onlineadmins}') . '#',
+        "");
 }
 
 function onlineplayers_global()
 {
-    global $onlineadmins,$db,$templates,$mybb;
+    global $onlineadmins, $db, $templates, $mybb;
+
+    $groups = explode(",", $mybb->settings['onlineplayers_groupids']);
     
-    $query = $db->query("SELECT * FROM rp_players WHERE online = 1 AND rank != 'user'");
-    $admins = $db->num_rows($query);
-    
-    if($admins <= $mybb->settings['onlineplayers_warninglvl']){
-        if($admins <= $mybb->settings['onlineplayers_errorlvl']){
-            $warnclass = "note_error";
-        }else{
-            $warnclass = "note_warn";
+    if (in_array($mybb->user['usergroup'], $groups)) {
+        $query = $db->query("SELECT * FROM rp_players WHERE online = 1 AND rank != 'user'");
+        $admins = $db->num_rows($query);
+
+        if ($admins <= $mybb->settings['onlineplayers_warninglvl']) {
+            if ($admins <= $mybb->settings['onlineplayers_errorlvl']) {
+                $warnclass = "note_error";
+            } else {
+                $warnclass = "note_warn";
+            }
+            $adminsonline = $admins;
+
+            eval('$onlineadmins = "' . $templates->get('onlineplayers_adminmsg') . '";');
         }
-        $adminsonline = $admins;
-        
-        eval('$onlineadmins = "' . $templates->get('onlineplayers_adminmsg') . '";');
-    } 
+    }
 }
 
 
