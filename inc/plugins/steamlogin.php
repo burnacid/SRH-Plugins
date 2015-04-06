@@ -9,7 +9,7 @@ function steamlogin_info()
         "authorsite" => "http://www.srh.im",
         "version" => "1.0",
         "guid" => "",
-        "compatibility" => "18*");
+        "compatibility" => "");
 }
 
 function steamlogin_activate()
@@ -27,8 +27,6 @@ function steamlogin_activate()
 
     find_replace_templatesets('header', '#' . preg_quote('{$bbclosedwarning}') . '#',
         "{\$bbclosedwarning}{\$GLOBALS['nosteam']}");
-    find_replace_templatesets('member_profile', '#' . preg_quote('<strong>{$lang->postbit_status}</strong> {$online_status}') . '#',
-        "<strong>{\$lang->postbit_status}</strong> {\$online_status}<br /><strong>SteamID:</strong> {\$memprofile['steamid']}");
 }
 
 function steamlogin_deactivate()
@@ -40,8 +38,6 @@ function steamlogin_deactivate()
     $PL->templates_delete("steamid", true);
     find_replace_templatesets('header', '#' . preg_quote('{$GLOBALS[\'nosteam\']}') .
         '#', "");
-    find_replace_templatesets('member_profile', '#' . preg_quote('<br /><strong>SteamID:</strong> {$memprofile[\'steamid\']}') . '#',
-        "");
 }
 
 $plugins->add_hook("member_do_register_end", "steamlogin_redirect");
@@ -116,31 +112,6 @@ function steamlogin_display_error()
     }
 
     $GLOBALS['nosteam'] = $nosteam;
-}
-
-$plugins->add_hook("member_profile_end", "steamlogin_member_profile");
-function steamlogin_member_profile()
-{
-    global $memprofile;
-    
-    $steamid = $memprofile['steamid'];
-    $memprofile['steamid'] = "<a href='".get_profileURL($steamid)."' target='_blank'>".$steamid." (<a href='rpadmin.php?steamid=".$steamid."'>RP bans / warnings</a>)</a>";
-}
-
-function get_profileURL($steamId)
-{
-    $gameType = 0;
-    $authServer = 0;
-    $steamId = str_replace('STEAM_', '' ,$steamId);
-    $parts = explode(':', $steamId);
-    $gameType = $parts[0];
-    $authServer = $parts[1];
-    $clientId = $parts[2];
-    $res = bcadd((bcadd('76561197960265728', $authServer)), (bcmul($clientId, '2')));
-    $cid = str_replace('.0000000000', '', $res);
-    $url = 'http://www.steamcommunity.com/profiles/';
-    
-    return $url . $cid;
 }
 
 ?>
