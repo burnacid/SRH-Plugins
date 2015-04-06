@@ -70,12 +70,10 @@ function styleclosedthreads_thread()
 {
     global $mybb, $threadclass, $thread;
 
-    if ($thread['closed'] == 1) {
+    if ($thread['closed'] == 1 && $thread['sticky'] == 0) {
         $threadclass = " closed";
     } else {
         $threadclass = " open";
     }
 }
-
-
 ?>
