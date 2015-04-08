@@ -232,6 +232,8 @@ if ($mybb->settings['rpadmin_enabled']) {
                     $ban['status'] = "<strong>Expires: </strong> <span style='color: red;'>" . $ban['expires'] .
                         "</span>";
                 }
+                
+                $ban['length'] = secondsToTime($ban['length']);
 
                 if (($mybb->user['steamid'] == $steamid && ($ban['length'] == 0 || $ban['length'] +
                     $ban['time'] > time())) || is_rpadmin($mybb->user['uid'])) {

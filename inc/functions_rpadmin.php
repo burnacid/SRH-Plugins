@@ -1,5 +1,58 @@
 <?php
 
+function secondsToTime($seconds)
+{   
+    if($seconds == 0){
+        return "Permanent";
+    }else{
+        $return ="";
+        
+        $year = floor($seconds / 31536000);
+        $seconds %= 31536000;
+        
+        $month = floor($seconds / 2592000);
+        $seconds %= 2592000;
+        
+        $week = floor($seconds / 604800);
+        $seconds %= 604800;
+        
+        $day = floor($seconds / 86400);
+        $seconds %= 86400;
+        
+        $hours = floor($seconds / 3600);
+        $seconds %= 3600;
+        
+        $minute = floor($seconds / 60);
+        $seconds %= 60;
+        
+        if($year != 0){
+            $return .= $year. "Y ";
+        }
+        
+        if($month != 0){
+            $return .= $month. "M ";
+        }
+        
+        if($week != 0){
+            $return .= $week. "W ";
+        }
+        
+        if($day != 0){
+            $return .= $day. "D ";
+        }
+        
+        if($hours != 0){
+            $return .= $hours. "H ";
+        }
+        
+        if($minute != 0){
+            $return .= $minute. "Min ";
+        }
+        
+        return $return;
+    }
+}
+
 function is_steamid($steamid)
 {
     return preg_match("/STEAM_0:[0-1]:[0-9]+/", $steamid);
