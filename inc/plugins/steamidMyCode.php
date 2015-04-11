@@ -26,7 +26,6 @@ function steamidMyCode_info()
 function steamidMyCode_parse_message($message)
 {
     require_once MYBB_ROOT . "inc/functions_steamid.php";
-    global $firephp;
     
     $find = "#STEAM_0:(1|0):(\d+)#";    
     preg_match_all($find, $message, $matches);
@@ -35,8 +34,6 @@ function steamidMyCode_parse_message($message)
     for($i=0;$i<count($steamids);$i++){
         $steamid = $steamids[$i];
         $steam64 = steamIDtoSteam64($steamids[$i]);
-        
-        $firephp->log($steamid ."|". $steam64);
         
         $message = preg_replace("#".$steamid."#","<a href='http://www.steamcommunity.com/profiles/".$steam64."' target='_blank'>".$steamid."</a>",$message);
     }
