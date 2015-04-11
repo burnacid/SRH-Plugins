@@ -47,8 +47,13 @@ function darkRPServer_activate()
 
 
     $PL->settings("darkRPServer", // group name and settings prefix
-        "Online Players", "Setting group for the Online Players plugin.", array("server" =>
+        "Online Players", "Setting group for the Online Players plugin.", array("name" =>
             array(
+            "title" => "Server Name",
+            "description" => "The name displayed for this server",
+            "optionscode" => "text",
+            "value" => "DarkRP",
+            ),"server" => array(
             "title" => "Garrys Mod Server",
             "description" => "The IP:Port of the server for admins to quick connect",
             "optionscode" => "text",
@@ -60,8 +65,7 @@ function darkRPServer_activate()
             "value" => "64",
             )));
 
-    $t_darkRPServer_serverinfo =
-        '<a href="steam://connect/{$mybb->settings[\'darkRPServer_server\']}" class="DRPserverinfo">{$onlineplayers}/{$mybb->settings[\'darkRPServer_max\']}</a>';
+    $t_darkRPServer_serverinfo = '<a href="steam://connect/{$mybb->settings[\'darkRPServer_server\']}" class="DRPserverinfo">{$mybb->settings[\'darkRPServer_name\']} {$onlineplayers}/{$mybb->settings[\'darkRPServer_max\']}</a>';
 
     $PL->templates("darkRPServer", // template prefix, must not contain _
         "DarkRP Server Info", // you can also use "<lang:your_language_variable>" here
@@ -77,10 +81,10 @@ function darkRPServer_activate()
         }
     ');
 
-    find_replace_templatesets('header_welcomeblock_guest', '#' . preg_quote('{$lang->welcome_register}</a></span>') . '#',
-        "{\$lang->welcome_register}</a></span>{\$darkrpinfo}");
-    find_replace_templatesets('header_welcomeblock_member', '#' . preg_quote('{$lang->welcome_logout}</a></span>') . '#',
-        "{\$lang->welcome_logout}</a></span>{\$darkrpinfo}");
+    find_replace_templatesets('header_welcomeblock_guest', '#' . preg_quote('{$lang->welcome_register}</a></span>') .
+        '#', "{\$lang->welcome_register}</a></span>{\$darkrpinfo}");
+    find_replace_templatesets('header_welcomeblock_member', '#' . preg_quote('{$lang->welcome_logout}</a></span>') .
+        '#', "{\$lang->welcome_logout}</a></span>{\$darkrpinfo}");
 }
 
 function darkRPServer_deactivate()
@@ -93,19 +97,19 @@ function darkRPServer_deactivate()
     $PL->templates_delete("darkRPServer", true);
     $PL->stylesheet_delete('darkRPServer', true);
 
-    find_replace_templatesets('header_welcomeblock_guest', '#' . preg_quote('{$darkrpinfo}') . '#',
-        "");
-    find_replace_templatesets('header_welcomeblock_member', '#' . preg_quote('{$darkrpinfo}') . '#',
-        "");
+    find_replace_templatesets('header_welcomeblock_guest', '#' . preg_quote('{$darkrpinfo}') .
+        '#', "");
+    find_replace_templatesets('header_welcomeblock_member', '#' . preg_quote('{$darkrpinfo}') .
+        '#', "");
 }
 
 function darkRPServer_serverinfo()
 {
-    global $mybb,$db,$templates,$darkrpinfo;
-    
+    global $mybb, $db, $templates, $darkrpinfo;
+
     $query = $db->query("SELECT * FROM rp_players WHERE online != 0");
     $onlineplayers = $db->num_rows($query);
-    
+
     eval('$darkrpinfo = "' . $templates->get('darkRPServer_serverinfo') . '";');
 }
 
