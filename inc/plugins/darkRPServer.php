@@ -47,7 +47,7 @@ function darkRPServer_activate()
 
 
     $PL->settings("darkRPServer", // group name and settings prefix
-        "Online Players", "Setting group for the Online Players plugin.", array("name" =>
+        "Dark RP Server Info", "Setting group for the Online Players plugin.", array("name" =>
             array(
             "title" => "Server Name",
             "description" => "The name displayed for this server",
